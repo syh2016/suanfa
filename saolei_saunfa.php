@@ -6,11 +6,12 @@ main();//启动程序
 * @author   syh
 * @param    int $hang 表格行数
 * @param    int $lie  表格列数
+* @param    int $num  雷数量
 * @return   null
 */
-function main($hang=10,$lie=10)
+function main($hang=10,$lie=10,$num=15)
 {
-	$data=get_rnd_data($hang,$lie);//获取随机数据
+	$data=table_data($hang,$lie,$num);//获取随机数据 
 	$points=get_points($data); //点坐标
 	$group=point_group($points);//陆地集合
 	echo get_table($data,$group);//输出表格
@@ -62,32 +63,27 @@ function is_near_arr($point,$arr)
 
  
 /**
-* 生成随机数据 
+* 生成表格数据 
 * @author   syh
-* @param    int  $hang 行数
-* @param    int  $lie  列数
-* @return   array  二维数组
+* @param    int  $hang
+* @param    int  $lie
+* @param    int  $num
+* @return   array
 */
-function get_rnd_data($hang,$lie)
+function table_data($hang,$lie,$num)
 {
-	// 生成单行随机数
-	$rnd_one=function($num){
-		$count=0;
-		$list=[];//存放值为1的key
-		while ($count < $num)
-		{
-			$return[$count+1] = mt_rand(0,1); 
-			$count = count($return);
-		}
-		return $return;	
-	};
-
-	for ($i=1; $i <=$lie ; $i++)
-	{ 
-		$list[$i]=$rnd_one($hang);
+	if ($num>$hang*$lie)
+	{
+		die('数量太大');
 	}
-	return $list;
-}
+ 	$arr1= array_fill(0,$num,1);
+ 	$len=$hang*$lie-count($arr1);
+ 	$arr2=array_fill(0,$len,0);
+	$list=array_merge($arr1,$arr2);
+ 	shuffle($list);
+ 	return array_chunk($list,$lie);
+} 
+ 
 
 /**
 * 生成表格与数据 
